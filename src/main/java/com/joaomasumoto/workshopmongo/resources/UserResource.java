@@ -1,7 +1,9 @@
 package com.joaomasumoto.workshopmongo.resources;
 
 
+import com.joaomasumoto.workshopmongo.domain.Post;
 import com.joaomasumoto.workshopmongo.domain.User;
+import com.joaomasumoto.workshopmongo.dto.PostDTO;
 import com.joaomasumoto.workshopmongo.dto.UserDTO;
 import com.joaomasumoto.workshopmongo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value="/users")
@@ -61,6 +62,13 @@ public class UserResource {
         obj.setId(id);
         service.update(obj);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value="/{id}/posts")
+    public ResponseEntity<List<PostDTO>> findPosts(@PathVariable String id) {
+        List<Post> posts = service.findById(id).getPosts();
+        List<PostDTO> postsDTO = posts.stream().map(PostDTO::new).toList();
+        return ResponseEntity.ok().body(postsDTO);
     }
 
 
