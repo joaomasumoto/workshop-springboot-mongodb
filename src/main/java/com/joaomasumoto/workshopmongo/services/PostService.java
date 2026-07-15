@@ -6,6 +6,8 @@ import com.joaomasumoto.workshopmongo.services.exception.ObjectNotFoundException
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +26,13 @@ public class PostService {
     }
 
     public List<Post> findByTitle(String text) {
-        return repo.findByTitleContainingIgnoreCase(text);
+        return repo.findByTitleContaining(text);
     }
+
+    public List<Post> fullSearch(String text, Date minDate, Date maxDate) {
+        Date maxExclusive = Date.from(maxDate.toInstant().plus(1, ChronoUnit.DAYS));
+        return repo.fullSearch(text, minDate, maxExclusive);
+    }
+
 
 }
